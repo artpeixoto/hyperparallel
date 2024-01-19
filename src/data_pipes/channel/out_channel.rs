@@ -4,7 +4,7 @@ use crossbeam_channel::{Sender, TrySendError};
 use crate::data_pipes::base::{PipeStatus, OutPipe, Pipe};
 use crate::data_pipes::channel::ChannelStatusRef;
 
-pub struct OutChannel<Val>{
+pub struct OutChannel<Val> {
     channel:        Option<Sender<Val>>,
     data_buffer:    Option<Val>,
     status:         ChannelStatusRef
@@ -15,8 +15,13 @@ impl<Val> OutChannel<Val> {
         Self{
             channel: Some(sender),
             data_buffer: None,
-            status: status,
+            status,
         }
+    }
+
+    pub fn disconnect(&mut self) {
+        *self.status.0.write().unwrap() = PipeStatus::Disconnected;
+        self.channel = None;
     }
 }
 
@@ -32,8 +37,7 @@ impl<Val> Clone for OutChannel<Val>{
 
 impl<Val> Pipe for OutChannel<Val>{
     fn disconnect(&mut self) {
-        *self.status.0.write().unwrap() = PipeStatus::Disconnected;
-        self.channel = None;
+        self.disconnect();
     }
     fn try_flow_data(&mut self) -> bool {
         if self.data_buffer.is_some() {

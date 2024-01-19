@@ -19,7 +19,7 @@ pub struct DataFlowProcess<TFn, TIn, TOut, TInlet, TOutlet>
 
 impl<TFn, TIn, TOut, TInlet, TOutlet> DataFlowProcess<TFn, TIn, TOut, TInlet, TOutlet>
     where
-    TFn: (Fn(TIn) -> TOut) + Send + Sync + Clone,
+    TFn:     (Fn(TIn) -> TOut) + Send + Sync + Clone,
     TInlet:  InPipe<TIn>,
     TOutlet: OutPipe<TOut>,
 {
@@ -31,6 +31,7 @@ impl<TFn, TIn, TOut, TInlet, TOutlet> DataFlowProcess<TFn, TIn, TOut, TInlet, TO
             _phantom: PhantomData::default()
         }
     }
+
     pub fn verify_channels_connections(&mut self) -> PipeStatus{
         use PipeStatus::*;
         match (self.inlet.verify_connection(), self.outlet.verify_connection()){
@@ -40,6 +41,7 @@ impl<TFn, TIn, TOut, TInlet, TOutlet> DataFlowProcess<TFn, TIn, TOut, TInlet, TO
             (Okay           , Okay)         => { Okay },
         }
     }
+
     pub fn run(&mut self) -> ProcStatus{
         if self.verify_channels_connections() == PipeStatus::Okay{
             self.inlet.try_flow_data();
@@ -62,11 +64,11 @@ impl<TFn, TIn, TOut, TInlet, TOutlet> DataFlowProcess<TFn, TIn, TOut, TInlet, TO
 }
 
 impl<TFn, TIn, TOut, TInlet, TOutlet>
-Iterator for DataFlowProcess<TFn, TIn, TOut, TInlet, TOutlet>
+    Iterator for DataFlowProcess<TFn, TIn, TOut, TInlet, TOutlet>
     where
-    TFn: (Fn(TIn) -> TOut) + Send + Sync + Clone,
-    TInlet:  InPipe<TIn>,
-    TOutlet: OutPipe<TOut>,
+        TFn: (Fn(TIn) -> TOut) + Send + Sync + Clone,
+        TInlet:  InPipe<TIn>,
+        TOutlet: OutPipe<TOut>,
 {
     type Item = ();
     fn next(&mut self) -> Option<Self::Item> {

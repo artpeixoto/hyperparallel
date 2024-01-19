@@ -8,18 +8,19 @@ impl<TVal, TSelf> FnDataSink<TVal> for TSelf where TSelf: FnMut(TVal) -> ResLock
 #[derive(Clone)]
 pub struct ProcSinkNode<TFnData, TInPipe,  TVal>
     where
-    TFnData:    FnDataSink<TVal>,
-    TInPipe:     InPipe<TVal>
+    TFnData: FnDataSink<TVal>,
+    TInPipe: InPipe<TVal>
 {
     in_pipe: TInPipe,
     fn_data: TFnData,
     _phantom: PhantomData<TVal>
 }
+
 impl<TFnData, TInPipe,  TVal>
-ProcSinkNode<TFnData, TInPipe,  TVal>
+    ProcSinkNode<TFnData, TInPipe,  TVal>
     where
-    TFnData:    FnMut(TVal) -> ResLockingFn<TVal, Option<()>> + Clone + Send + Sync,
-    TInPipe:     InPipe<TVal>
+        TFnData:    FnMut(TVal) -> ResLockingFn<TVal, Option<()>> + Clone + Send + Sync,
+        TInPipe:    InPipe<TVal>
 {
     pub fn new(fn_data: TFnData, in_pipe: TInPipe) -> Self{
         Self{
@@ -59,11 +60,10 @@ ProcSinkNode<TFnData, TInPipe,  TVal>
 }
 
 impl<TFnData, TInPipe,  TVal>
-Iterator for
-ProcSinkNode<TFnData, TInPipe,  TVal>
+    Iterator for ProcSinkNode<TFnData, TInPipe,  TVal>
     where
-    TFnData:    FnMut(TVal) -> ResLockingFn<TVal, Option<()>> + Clone + Send + Sync,
-    TInPipe:     InPipe<TVal>
+        TFnData:     FnMut(TVal) -> ResLockingFn<TVal, Option<()>> + Clone + Send + Sync,
+        TInPipe:     InPipe<TVal>
 {
     type Item = ();
     fn next(&mut self) -> Option<Self::Item> {

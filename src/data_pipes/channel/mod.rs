@@ -1,7 +1,7 @@
 use std::ops::Deref;
 use std::sync::{Arc, RwLock, TryLockError};
-use crossbeam_channel::{Receiver, Sender, TryRecvError};
-use crate::data_pipes::base::{Pipe, PipeStatus, InPipe};
+use crossbeam_channel::{Receiver, Sender };
+
 use crate::data_pipes::channel::in_channel::InChannel;
 use crate::data_pipes::channel::out_channel::OutChannel;
 
@@ -21,7 +21,6 @@ pub mod channel_status {
 pub use channel_status::*;
 pub mod in_channel;
 pub mod out_channel;
-
 pub fn make_channels<Val>(channel_pair: (Sender<Val>, Receiver<Val>)) -> (OutChannel<Val>, InChannel<Val>){
     let (sender, receiver) = channel_pair;
 
